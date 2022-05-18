@@ -29,5 +29,4 @@ bin/
 .DS_Store!/*.pdf
 
 /*.pdf
-books.sql
-!/books.sql
+/*.sql
