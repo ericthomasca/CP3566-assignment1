@@ -30,3 +30,4 @@ bin/
 
 /*.pdf
 books.sql
+!/books.sql
