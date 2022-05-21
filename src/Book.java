@@ -1,27 +1,36 @@
-import java.sql.*;
-import java.util.List;
+//Create a “Book” class which will represent the books from the “titles” table in the books database.
+// Each book object will have a list of its authors–a private attribute List<Author> authorList.
+// (Make sure to populate the authorList attribute when loading the objects from the database.)
 
 public class Book {
-    static final String DB_URL = "jdbc:mariadb://localhost:3306/books";
-    static final String USER = "root";
-    static final String PASS = "Batman0928";
-    static final String QUERY = "SELECT authorID, firstName, lastName FROM authors";
-    private List<Author> authorList;
 
-    public static void main(String[] args) {
+    private String isbn;
+    private String title;
+    private int editionNumber;
+    private int copyright;
+//    private List<Author> authorList;
 
-        // Open a connection
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(QUERY);) {
-            // Extract data from result set
-            while (rs.next()) {
-                // Retrieve by column name
-                System.out.print("Author ID: " + rs.getInt("authorID"));
-                System.out.print(", First Name: " + rs.getString("firstName"));
-                System.out.println(", Last Name: " + rs.getString("lastName"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public Book(String isbn, String title, int editionNumber, int copyright) {
+        this.isbn = isbn;
+        this.title = title;
+        this.editionNumber = editionNumber;
+        this.copyright = copyright;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public int getEditionNumber() {
+        return editionNumber;
+    }
+
+    public int getCopyright() {
+        return copyright;
     }
 
 }
