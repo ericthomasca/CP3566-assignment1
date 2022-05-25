@@ -1,4 +1,4 @@
-import java.sql.*;
+import java.util.List;
 
 // Create a “BookDatabaseManager” class which will handle all database connections
 // and queries as well as store lists of Books and Authors to be used by the main
@@ -20,24 +20,60 @@ import java.sql.*;
 // solution it is assumed that any entered authors or books are legitimate
 // (e.g. we don’t care if two authors have the same name).
 public class BookDatabaseManager {
-    static final String DB_URL = "jdbc:mariadb://localhost:3306/books";
-    static final String USER = "root";
-    static final String PASS = "Q5obBNgUy4";
-    static final String QUERY = "SELECT authorID, firstName, lastName FROM authors";
+    static String DATABASE_URL = "jdbc:mariadb://localhost:3306/books";
+    static String USER = "root";
+    static String PASS = "Q5obBNgUy4";
+    static String SELECT_QUERY_AUTHOR = "SELECT authorID, firstName, lastName FROM authors";
+    static List<Book> bookList;
+    static List<Author> authorList;
 
-    public static void main(String[] args) {
-
-        // Open a connection
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(QUERY);) {
-            // Extract data from result set
-            while (rs.next()) {
-                // Retrieve by column name
-                System.out.print("Author ID: " + rs.getInt("authorID"));
-                System.out.print(", First Name: " + rs.getString("firstName"));
-                System.out.println(", Last Name: " + rs.getString("lastName"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public BookDatabaseManager() {
     }
+
+    public List<Book> getBookList() {
+        return bookList;
+    }
+
+    public List<Author> getAuthorList() {
+        return authorList;
+    }
+
+    public void addNewBook(Book book) {
+
+    }
+
+    public void addNewAuthor(Author author) {
+
+    }
+
+    private void loadDatabase() {
+
+    }
+
+    private void loadBooks() {
+
+    }
+
+    private void loadAuthors() {
+
+    }
+
+
+    //    public static void main(String[] args) {
+//
+//        // Open a connection
+//        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+//             Statement stmt = conn.createStatement();
+//             ResultSet rs = stmt.executeQuery(QUERY);) {
+//            // Extract data from result set
+//            while (rs.next()) {
+//                // Retrieve by column name
+//                System.out.print("Author ID: " + rs.getInt("authorID"));
+//                System.out.print(", First Name: " + rs.getString("firstName"));
+//                System.out.println(", Last Name: " + rs.getString("lastName"));
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }
