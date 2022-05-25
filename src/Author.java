@@ -1,7 +1,7 @@
 import java.util.List;
 
 // Create an“Author” class which will represent the authors from the “authors” table
-// in the books database. Each author object will have a list of the books they have
+// in the book's database. Each author object will have a list of the books they have
 // written–a private attribute List<Book> bookList.(Make sure to populate the bookList
 // attribute when loading the objects from the database.)
 
