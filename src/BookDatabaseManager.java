@@ -1,5 +1,3 @@
-import java.util.List;
-
 // Create a “BookDatabaseManager” class which will handle all database connections
 // and queries as well as store lists of Books and Authors to be used by the main
 // application. It is recommended that you do the following:
@@ -19,6 +17,9 @@ import java.util.List;
 // NOTE: We will not be concerned with any update queries. To simply the
 // solution it is assumed that any entered authors or books are legitimate
 // (e.g. we don’t care if two authors have the same name).
+
+import java.util.List;
+
 public class BookDatabaseManager {
     static String DATABASE_URL = "jdbc:mariadb://localhost:3306/books";
     static String USER = "root";
