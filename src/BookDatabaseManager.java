@@ -18,6 +18,10 @@
 // solution it is assumed that any entered authors or books are legitimate
 // (e.g. we don’t care if two authors have the same name).
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 public class BookDatabaseManager {
@@ -47,7 +51,14 @@ public class BookDatabaseManager {
 
     }
 
-    private void loadDatabase() {
+    private void loadDatabase()  {
+        try {
+            Connection conn = DriverManager.getConnection(DATABASE_URL, USER, PASS);
+            Statement stmt = conn.createStatement();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
