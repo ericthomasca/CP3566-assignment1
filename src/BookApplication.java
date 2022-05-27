@@ -13,6 +13,6 @@
 
 public class BookApplication {
     public static void main(String[] args) {
-
+        BookDatabaseManager bookDbManager = new BookDatabaseManager();
     }
 }
