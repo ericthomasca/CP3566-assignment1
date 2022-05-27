@@ -32,115 +32,78 @@ public class BookDatabaseManager {
     public BookDatabaseManager() {
     }
 
-    public List<Book> getBookList() {
-        try (ResultSet books = loadBooks()) {
-            while (books != null && books.next()) {
-                bookList.add(
-                        new Book(
-                                books.getString("isbn"),
-                                books.getString("title"),
-                                books.getInt("editionNumber"),
-                                books.getString("copyright")
-                        )
-                );
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public List<Book> getBookList() throws SQLException {
+        ResultSet books = loadBooks();
+        while (books.next()) {
+            bookList.add(
+                new Book(
+                    books.getString("isbn"),
+                    books.getString("title"),
+                    books.getInt("editionNumber"),
+                    books.getString("copyright")
+                )
+            );
         }
         return bookList;
     }
 
-    public List<Author> getAuthorList() {
-        try (ResultSet authors = loadAuthors()) {
-            while (authors != null && authors.next()) {
-                authorList.add(
-                        new Author(
-                                authors.getInt("authorID"),
-                                authors.getString("firstName"),
-                                authors.getString("lastName")
-                        )
-                );
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public List<Author> getAuthorList() throws SQLException {
+        ResultSet authors = loadAuthors();
+        while (authors.next()) {
+            authorList.add(
+                new Author(
+                    authors.getInt("authorID"),
+                    authors.getString("firstName"),
+                    authors.getString("lastName")
+                )
+            );
         }
         return authorList;
     }
 
-    public void addNewBook(Book book) {
-        try (
-                Connection connection = loadDatabase();
-                Statement statement = connection != null ? connection.createStatement() : null) {
+    public void addNewBook(Book book) throws SQLException {
+        Connection connection = loadDatabase();
+        Statement statement = connection.createStatement();
 
-            String ISBN = book.getISBN();
-            String title = book.getTitle();
-            int edition = book.getEdition();
-            String copyright = book.getCopyright();
+        String ISBN = book.getISBN();
+        String title = book.getTitle();
+        int edition = book.getEdition();
+        String copyright = book.getCopyright();
 
-            String sqlQuery = "INSERT INTO titles (isbn, title, editionNumber, copyright) VALUES (" + ISBN + ", " + title + ", " + edition + ", "  + copyright + ");";
-
-            Objects.requireNonNull(statement).executeQuery(sqlQuery);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        String sqlQuery = "INSERT INTO titles (isbn, title, editionNumber, copyright) " +
+                "VALUES (" + ISBN + ", " + title + ", " + edition + ", " + copyright + ");";
+        statement.executeQuery(sqlQuery);
     }
 
-    public void addNewAuthor(Author author) {
-        try (
-                Connection connection = loadDatabase();
-                Statement statement = connection != null ? connection.createStatement() : null) {
+    public void addNewAuthor(Author author) throws SQLException {
+        Connection connection = loadDatabase();
+        Statement statement = connection.createStatement();
 
-            int authorID = author.getId();
-            String firstName = author.getFirstName();
-            String lastName = author.getLastName();
+        int authorID = author.getId();
+        String firstName = author.getFirstName();
+        String lastName = author.getLastName();
 
-            String sqlQuery = "INSERT INTO authors (authorID, firstName, lastName) VALUES (" + authorID + ", " + firstName + ", " + lastName + ");";
+        String sqlQuery = "INSERT INTO authors (authorID, firstName, lastName) " +
+                "VALUES (" + authorID + ", " + firstName + ", " + lastName + ");";
 
-            Objects.requireNonNull(statement).executeQuery(sqlQuery);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        statement.executeQuery(sqlQuery);
     }
 
-
-    private Connection loadDatabase() {
-        try {
-            return DriverManager.getConnection(DATABASE_URL, USER, PASS);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    private Connection loadDatabase() throws SQLException {
+        return DriverManager.getConnection(DATABASE_URL, USER, PASS);
     }
 
-    private ResultSet loadBooks() {
-        try (
-                Connection connection = loadDatabase();
-                Statement statement = connection != null ? connection.createStatement() : null) {
-
-            String sqlQuery = "SELECT * from titles";
-            return statement != null ? statement.executeQuery(sqlQuery) : null;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    private ResultSet loadBooks() throws SQLException {
+        Connection connection = loadDatabase();
+        Statement statement = connection.createStatement();
+        String sqlQuery = "SELECT * from titles";
+        return statement.executeQuery(sqlQuery);
     }
 
-    private ResultSet loadAuthors() {
-        try (
-                Connection connection = loadDatabase();
-                Statement statement = connection != null ? connection.createStatement() : null) {
-
-            String sqlQuery = "SELECT * from authors";
-            return statement != null ? statement.executeQuery(sqlQuery) : null;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    private ResultSet loadAuthors() throws SQLException {
+        Connection connection = loadDatabase();
+        Statement statement = connection.createStatement();
+        String sqlQuery = "SELECT * from authors";
+        return statement.executeQuery(sqlQuery);
     }
 }
-
