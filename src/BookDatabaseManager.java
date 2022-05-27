@@ -18,74 +18,129 @@
 // solution it is assumed that any entered authors or books are legitimate
 // (e.g. we don’t care if two authors have the same name).
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
+import java.util.Objects;
 
 public class BookDatabaseManager {
-    static String DATABASE_URL = "jdbc:mariadb://localhost:3306/books";
-    static String USER = "root";
-    static String PASS = "Q5obBNgUy4";
-    static String SELECT_QUERY_AUTHOR = "SELECT authorID, firstName, lastName FROM authors";
-    static List<Book> bookList;
-    static List<Author> authorList;
+    private final String DATABASE_URL = "jdbc:mariadb://localhost:3306/books";
+    private final String USER = "root";
+    private final String PASS = "Q5obBNgUy4";
+    private List<Book> bookList;
+    private List<Author> authorList;
 
     public BookDatabaseManager() {
     }
 
     public List<Book> getBookList() {
+        try (ResultSet books = loadBooks()) {
+            while (books != null && books.next()) {
+                bookList.add(
+                        new Book(
+                                books.getString("isbn"),
+                                books.getString("title"),
+                                books.getInt("editionNumber"),
+                                books.getString("copyright")
+                        )
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return bookList;
     }
 
     public List<Author> getAuthorList() {
+        try (ResultSet authors = loadAuthors()) {
+            while (authors != null && authors.next()) {
+                authorList.add(
+                        new Author(
+                                authors.getInt("authorID"),
+                                authors.getString("firstName"),
+                                authors.getString("lastName")
+                        )
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return authorList;
     }
 
     public void addNewBook(Book book) {
+        try (
+                Connection connection = loadDatabase();
+                Statement statement = connection != null ? connection.createStatement() : null) {
 
-    }
+            String ISBN = book.getISBN();
+            String title = book.getTitle();
+            int edition = book.getEdition();
+            String copyright = book.getCopyright();
 
-    public void addNewAuthor(Author author) {
+            String sqlQuery = "INSERT INTO titles (isbn, title, editionNumber, copyright) VALUES (" + ISBN + ", " + title + ", " + edition + ", "  + copyright + ");";
 
-    }
-
-    private void loadDatabase()  {
-        try {
-            Connection conn = DriverManager.getConnection(DATABASE_URL, USER, PASS);
-            Statement stmt = conn.createStatement();
+            Objects.requireNonNull(statement).executeQuery(sqlQuery);
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
-    private void loadBooks() {
+    public void addNewAuthor(Author author) {
+        try (
+                Connection connection = loadDatabase();
+                Statement statement = connection != null ? connection.createStatement() : null) {
 
+            int authorID = author.getId();
+            String firstName = author.getFirstName();
+            String lastName = author.getLastName();
+
+            String sqlQuery = "INSERT INTO authors (authorID, firstName, lastName) VALUES (" + authorID + ", " + firstName + ", " + lastName + ");";
+
+            Objects.requireNonNull(statement).executeQuery(sqlQuery);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void loadAuthors() {
 
+    private Connection loadDatabase() {
+        try {
+            return DriverManager.getConnection(DATABASE_URL, USER, PASS);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
+    private ResultSet loadBooks() {
+        try (
+                Connection connection = loadDatabase();
+                Statement statement = connection != null ? connection.createStatement() : null) {
 
-    //    public static void main(String[] args) {
-//
-//        // Open a connection
-//        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-//             Statement stmt = conn.createStatement();
-//             ResultSet rs = stmt.executeQuery(QUERY);) {
-//            // Extract data from result set
-//            while (rs.next()) {
-//                // Retrieve by column name
-//                System.out.print("Author ID: " + rs.getInt("authorID"));
-//                System.out.print(", First Name: " + rs.getString("firstName"));
-//                System.out.println(", Last Name: " + rs.getString("lastName"));
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
+            String sqlQuery = "SELECT * from titles";
+            return statement != null ? statement.executeQuery(sqlQuery) : null;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private ResultSet loadAuthors() {
+        try (
+                Connection connection = loadDatabase();
+                Statement statement = connection != null ? connection.createStatement() : null) {
+
+            String sqlQuery = "SELECT * from authors";
+            return statement != null ? statement.executeQuery(sqlQuery) : null;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
+
